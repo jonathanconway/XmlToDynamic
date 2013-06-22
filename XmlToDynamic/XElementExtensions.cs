@@ -5,15 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Data.Entity.Design.PluralizationServices;
+using System.Globalization;
 
 namespace XmlToDynamic
 {
     public static class XElementExtensions
     {
+        private static PluralizationService pluralizationService;
+
+        static XElementExtensions()
+        {
+            pluralizationService = PluralizationService.CreateService(CultureInfo.CurrentCulture);
+        }
+
         public static dynamic ToDynamic(this XElement element)
         {
             var item = new ExpandoObject();
 
+            // Add sub-elements
             if (element.HasElements)
             {
                 var uniqueElements = element.Elements().Where(el => element.Elements().Count(el2 => el2.Name.LocalName.Equals(el.Name.LocalName)) == 1);
@@ -24,7 +34,9 @@ namespace XmlToDynamic
                     var list = new List<dynamic>();
                     foreach (var repeatedElement in repeatedElementGroup)
                         list.Add(ToDynamic(repeatedElement));
-                    ((IDictionary<string, object>)item).Add(repeatedElementGroup.Key + "s", list);
+                    
+                    ((IDictionary<string, object>)item)
+                        .Add(pluralizationService.Pluralize(repeatedElementGroup.Key), list);
                 }
 
                 foreach (var uniqueElement in uniqueElements.OrderBy(el => el.Name.LocalName))
@@ -33,6 +45,7 @@ namespace XmlToDynamic
                 }
             }
 
+            // Add attributes, if any
             if (element.Attributes().Any())
             {
                 ((IDictionary<string, object>)item)["Attributes"] =
@@ -41,6 +54,7 @@ namespace XmlToDynamic
                         value => value.Value);
             }
 
+            // Add value
             ((IDictionary<string, object>)item)["Value"] = element.Value;
 
             return item;

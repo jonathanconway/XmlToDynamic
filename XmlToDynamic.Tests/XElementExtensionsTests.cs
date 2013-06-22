@@ -63,10 +63,8 @@ namespace XmlToDynamic.Tests
             // Arrange
             var xml = XElement.Parse(@"<?xml version=""1.0"" encoding=""UTF-8""?>
 <testcontainer>
-    <testchild1>A</testchild1>
-    <testchild1>B</testchild1>
-    <testchild2>C</testchild2>
-    <testchild2>D</testchild2>
+    <child>A</child>
+    <child>B</child>
 </testcontainer>");
 
             // Act
@@ -75,15 +73,10 @@ namespace XmlToDynamic.Tests
             // Assert
             Assert.IsNotNull(result);
             
-            Assert.IsNotNull(result.testchild1s);
-            Assert.AreEqual(2, result.testchild1s.Count);
-            Assert.AreEqual("A", result.testchild1s[0].Value);
-            Assert.AreEqual("B", result.testchild1s[1].Value);
-
-            Assert.IsNotNull(result.testchild2s);
-            Assert.AreEqual(2, result.testchild2s.Count);
-            Assert.AreEqual("C", result.testchild2s[0].Value);
-            Assert.AreEqual("D", result.testchild2s[1].Value);
+            Assert.IsNotNull(result.children);
+            Assert.AreEqual(2, result.children.Count);
+            Assert.AreEqual("A", result.children[0].Value);
+            Assert.AreEqual("B", result.children[1].Value);
         }
 
         [TestMethod]
@@ -92,8 +85,8 @@ namespace XmlToDynamic.Tests
             // Arrange
             var xml = XElement.Parse(@"<?xml version=""1.0"" encoding=""UTF-8""?>
 <testcontainer>
-    <testchild1><name>Jon</name><age>13</age></testchild1>
-    <testchild1><name>Esther</name><age>18</age></testchild1>
+    <child><name>Jon</name><age>13</age></child>
+    <child><name>Esther</name><age>18</age></child>
 </testcontainer>");
 
             // Act
@@ -102,12 +95,12 @@ namespace XmlToDynamic.Tests
             // Assert
             Assert.IsNotNull(result);
 
-            Assert.IsNotNull(result.testchild1s);
-            Assert.AreEqual(2, result.testchild1s.Count);
-            Assert.AreEqual("Jon", result.testchild1s[0].name.Value);
-            Assert.AreEqual("13", result.testchild1s[0].age.Value);
-            Assert.AreEqual("Esther", result.testchild1s[1].name.Value);
-            Assert.AreEqual("18", result.testchild1s[1].age.Value);
+            Assert.IsNotNull(result.children);
+            Assert.AreEqual(2, result.children.Count);
+            Assert.AreEqual("Jon", result.children[0].name.Value);
+            Assert.AreEqual("13", result.children[0].age.Value);
+            Assert.AreEqual("Esther", result.children[1].name.Value);
+            Assert.AreEqual("18", result.children[1].age.Value);
         }
 
         [TestMethod]
