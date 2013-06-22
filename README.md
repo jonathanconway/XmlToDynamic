@@ -16,7 +16,7 @@ The object returned is also dynamic, so you can add new properties on-the-fly.
 
 To dynamize your XML, simply generate an XElement of it, then call `ToDynamic()` on it.
 
-	var xmlString = File.ReadAllText("c:\\test.xml");
+	var xmlString = @"<?xml version=""1.0"" encoding=""UTF-8""?><blah></blah>";
     var dynamicXml = XElement.Parse(xmlString).ToDynamic();
 
 ### Values
