@@ -10,16 +10,14 @@ namespace XmlToDynamic
 {
     public static class XElementExtensions
     {
-        //private static List<string> KnownLists;
-
         public static dynamic ToDynamic(this XElement element)
         {
+            var item = new ExpandoObject();
+
             if (element.HasElements)
             {
                 var uniqueElements = element.Elements().Where(el => element.Elements().Count(el2 => el2.Name.LocalName.Equals(el.Name.LocalName)) == 1);
                 var repeatedElements = element.Elements().Except(uniqueElements);
-
-                var item = new ExpandoObject();
 
                 foreach (var repeatedElementGroup in repeatedElements.GroupBy(re => re.Name.LocalName).OrderBy(el => el.Key))
                 {
@@ -33,12 +31,19 @@ namespace XmlToDynamic
                 {
                     ((IDictionary<string, object>)item).Add(uniqueElement.Name.LocalName, ToDynamic(uniqueElement));
                 }
-                return item;
             }
-            else
+
+            if (element.Attributes().Any())
             {
-                return element.Value;
+                ((IDictionary<string, object>)item)["Attributes"] =
+                    element.Attributes().ToDictionary(
+                        key => key.Name.LocalName,
+                        value => value.Value);
             }
+
+            ((IDictionary<string, object>)item)["Value"] = element.Value;
+
+            return item;
         }
     }
 }

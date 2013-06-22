@@ -25,9 +25,9 @@ namespace XmlToDynamic.Tests
             // Assert
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.testchild1);
-            Assert.AreEqual("one", result.testchild1);
+            Assert.AreEqual("one", result.testchild1.Value);
             Assert.IsNotNull(result.testchild2);
-            Assert.AreEqual("two", result.testchild2);
+            Assert.AreEqual("two", result.testchild2.Value);
         }
 
         [TestMethod]
@@ -51,10 +51,10 @@ namespace XmlToDynamic.Tests
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.testchild1);
             Assert.IsNotNull(result.testchild1.testsubchild);
-            Assert.AreEqual("one", result.testchild1.testsubchild);
+            Assert.AreEqual("one", result.testchild1.testsubchild.Value);
             Assert.IsNotNull(result.testchild2);
             Assert.IsNotNull(result.testchild2.testsubchild);
-            Assert.AreEqual("two", result.testchild2.testsubchild);
+            Assert.AreEqual("two", result.testchild2.testsubchild.Value);
         }
 
         [TestMethod]
@@ -77,13 +77,13 @@ namespace XmlToDynamic.Tests
             
             Assert.IsNotNull(result.testchild1s);
             Assert.AreEqual(2, result.testchild1s.Count);
-            Assert.AreEqual("A", result.testchild1s[0]);
-            Assert.AreEqual("B", result.testchild1s[1]);
+            Assert.AreEqual("A", result.testchild1s[0].Value);
+            Assert.AreEqual("B", result.testchild1s[1].Value);
 
             Assert.IsNotNull(result.testchild2s);
             Assert.AreEqual(2, result.testchild2s.Count);
-            Assert.AreEqual("C", result.testchild2s[0]);
-            Assert.AreEqual("D", result.testchild2s[1]);
+            Assert.AreEqual("C", result.testchild2s[0].Value);
+            Assert.AreEqual("D", result.testchild2s[1].Value);
         }
 
         [TestMethod]
@@ -104,10 +104,28 @@ namespace XmlToDynamic.Tests
 
             Assert.IsNotNull(result.testchild1s);
             Assert.AreEqual(2, result.testchild1s.Count);
-            Assert.AreEqual("Jon", result.testchild1s[0].name);
-            Assert.AreEqual("13", result.testchild1s[0].age);
-            Assert.AreEqual("Esther", result.testchild1s[1].name);
-            Assert.AreEqual("18", result.testchild1s[1].age);
+            Assert.AreEqual("Jon", result.testchild1s[0].name.Value);
+            Assert.AreEqual("13", result.testchild1s[0].age.Value);
+            Assert.AreEqual("Esther", result.testchild1s[1].name.Value);
+            Assert.AreEqual("18", result.testchild1s[1].age.Value);
+        }
+
+        [TestMethod]
+        public void ToDynamic_Translates_Attributes()
+        {
+            // Arrange
+            var xml = XElement.Parse(@"<?xml version=""1.0"" encoding=""UTF-8""?>
+<testcontainer>
+    <testchild1 testattr=""testvalue"">one</testchild1>
+</testcontainer>");
+
+            // Act
+            dynamic result = xml.ToDynamic();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.testchild1);
+            Assert.AreEqual("testvalue", result.testchild1.Attributes["testattr"]);
         }
     }
 }
