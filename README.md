@@ -8,7 +8,7 @@ Instead of this:
 
 You can type this:
 	
-	xelement.contact.Attributes["firstName"]
+	xelement.contact["firstName"]
 
 The object returned is also dynamic, so you can add new properties on-the-fly.
 
@@ -35,7 +35,7 @@ The elements get converted to properties, and their values can be accessed throu
 
 ### Attributes
 
-Attributes can be access through the `Attributes` property, which is a string-string dictionary.
+Attributes can be accessed through 'index' syntax, as shown below.
 
 	// <addressBook>
 	//   <contacts>
@@ -44,7 +44,7 @@ Attributes can be access through the `Attributes` property, which is a string-st
 	//     </contact>
 	//   </contacts>
 	// </addressBook>
-    var firstPersonsId = dynamicXml.contacts[0].Attributes["id"];
+    var firstPersonsId = dynamicXml.contacts[0]["id"];
     // firstPersonsId will be '1'
 
 ### Repeated elements
@@ -56,7 +56,7 @@ Whenever repeated elements are encountered, they're put into a container which i
 	//   <green lightness="1"></green>
 	//   <green lightness="10"></green>
 	// </colors>
-    var darkGreenLightness = dynamicXml.greens[0].Attributes["lightness"];
-    var lightGreenLightness = dynamicXml.greens[1].Attributes["lightness"];
+    var darkGreenLightness = dynamicXml.greens[0]["lightness"];
+    var lightGreenLightness = dynamicXml.greens[1]["lightness"];
     // darkGreenLightness will be '1'
     // lightGreenLightness will be '10'

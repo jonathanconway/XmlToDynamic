@@ -21,7 +21,7 @@ namespace XmlToDynamic
 
         public static dynamic ToDynamic(this XElement element)
         {
-            var item = new ExpandoObject();
+            var item = new DynamicElement();
 
             // Add sub-elements
             if (element.HasElements)
@@ -35,27 +35,26 @@ namespace XmlToDynamic
                     foreach (var repeatedElement in repeatedElementGroup)
                         list.Add(ToDynamic(repeatedElement));
                     
-                    ((IDictionary<string, object>)item)
+                    item.SubElements
                         .Add(pluralizationService.Pluralize(repeatedElementGroup.Key), list);
                 }
 
                 foreach (var uniqueElement in uniqueElements.OrderBy(el => el.Name.LocalName))
                 {
-                    ((IDictionary<string, object>)item).Add(uniqueElement.Name.LocalName, ToDynamic(uniqueElement));
+                    item.SubElements
+                        .Add(uniqueElement.Name.LocalName, ToDynamic(uniqueElement));
                 }
             }
 
             // Add attributes, if any
             if (element.Attributes().Any())
             {
-                ((IDictionary<string, object>)item)["Attributes"] =
-                    element.Attributes().ToDictionary(
-                        key => key.Name.LocalName,
-                        value => value.Value);
+                foreach (var attribute in element.Attributes())
+                    item[attribute.Name.LocalName] = attribute.Value;
             }
 
             // Add value
-            ((IDictionary<string, object>)item)["Value"] = element.Value;
+            item.Value = element.Value;
 
             return item;
         }

@@ -118,7 +118,26 @@ namespace XmlToDynamic.Tests
             // Assert
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.testchild1);
-            Assert.AreEqual("testvalue", result.testchild1.Attributes["testattr"]);
+            Assert.AreEqual("testvalue", result.testchild1["testattr"]);
+        }
+
+        [TestMethod]
+        public void ToDynamic_Returns_Dynamic_Object_Which_Can_Be_Modified_Later()
+        {
+            // Arrange
+            var xml = XElement.Parse(@"<?xml version=""1.0"" encoding=""UTF-8""?>
+<testcontainer>
+    <testchild1>one</testchild1>
+</testcontainer>");
+
+            // Act
+            dynamic result = xml.ToDynamic();
+            result.testchild2 = "two";
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.testchild2);
+            Assert.AreEqual("two", result.testchild2);
         }
     }
 }
