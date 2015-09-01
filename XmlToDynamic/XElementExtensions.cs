@@ -1,23 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using System.Data.Entity.Design.PluralizationServices;
 using System.Globalization;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace XmlToDynamic
 {
     public static class XElementExtensions
     {
-        private static PluralizationService pluralizationService;
-
-        static XElementExtensions()
-        {
-            pluralizationService = PluralizationService.CreateService(CultureInfo.CurrentCulture);
-        }
+        private static Lazy<PluralizationService> pluralizationService = new Lazy<PluralizationService>(() => PluralizationService.CreateService(CultureInfo.GetCultureInfo("en")));
 
         public static dynamic ToDynamic(this XElement element)
         {
@@ -36,7 +28,7 @@ namespace XmlToDynamic
                         list.Add(ToDynamic(repeatedElement));
                     
                     item.SubElements
-                        .Add(pluralizationService.Pluralize(repeatedElementGroup.Key), list);
+                        .Add(pluralizationService.Value.Pluralize(repeatedElementGroup.Key), list);
                 }
 
                 foreach (var uniqueElement in uniqueElements.OrderBy(el => el.Name.LocalName))
